@@ -157,6 +157,7 @@ class MetroApp:
 
         ticket = self.metro.book_ticket(name, start, end, quantity)
         messagebox.showinfo("Success", f"Ticket Booked!\nTotal Fare: {ticket.total} BDT")
+        self.name_entry.delete(0, tk.END) # Clear the input field 
         self.show_all_tickets()
 
     # Delete Ticket btn method
@@ -181,6 +182,8 @@ class MetroApp:
             
         for t in results:
             self.tree.insert("", tk.END, values=(t.id, t.passenger_name, t.start, t.end, t.quantity, t.total))
+        self.name_entry.delete(0, tk.END) # Clear the input field 
+
 
     # Show All Ticket details btn method
     def show_all_tickets(self):
@@ -195,6 +198,7 @@ class MetroApp:
     def show_total_fare(self):
         total = self.metro.total_fare()
         messagebox.showinfo("Total Fare", f"Total Fare for all tickets: {total} BDT")
+        
         
 # Run GUI   
 root = tk.Tk()
