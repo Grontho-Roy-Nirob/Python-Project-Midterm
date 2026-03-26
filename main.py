@@ -3,13 +3,11 @@ from tkinter import ttk,messagebox,simpledialog #import tkinter submodule from t
 # from PIL import Image, ImageTk                  # ami kono background pic  dekhte cai ei project e setar jonno Pillow library
 class Ticket:
     ticket_counter=1                            # value 1
-    def __init__(self, passenger_name, passenger_type, train, start, end, fare, quantity): # proti ta jatrir er jonno ekta unique id save kora hocce
+    def __init__(self, passenger_name, start, end, fare, quantity): # proti ta jatrir er jonno ekta unique id save kora hocce
         self.id = Ticket.ticket_counter
         Ticket.ticket_counter += 1              # prothom jatri assing korar porei counter er value 1 bariye 2 kora hbe
  
         self.passenger_name = passenger_name    
-        self.passenger_type = passenger_type
-        self.train = train
         self.start = start
         self.end = end
         self.fare = fare
@@ -17,7 +15,7 @@ class Ticket:
         self.total = fare * quantity
  
     def __str__(self):
-        return f"{self.passenger_name} - {self.train} | {self.start} to {self.end} | {self.quantity} Ticket | Total: {self.total} BDT"
+        return f"{self.passenger_name} | {self.start} to {self.end} | {self.quantity} Ticket | Total: {self.total} BDT"
 
 stations = [
     "Uttara North", "Uttara Center", "Uttara South", "Pallabi","Mirpur 11", "Mirpur 10", "Kazipara", "Shewrapara","Agargaon", 
@@ -69,8 +67,3 @@ class MetroSystem:
         for t in self.tickets:                                                               # ek ek kore proti ta ticket t ney hocce
             total += t.total                                                                 #total vara add hocce
         return total 
-
-
-
-      
-    
