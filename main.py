@@ -44,30 +44,30 @@ class MetroSystem:
 
         return base_fare + distance * per_station_fare
 
-    def book_ticket(self, passenger_name, start, end, quantity):
-        fare = self.get_fare(start, end)
-        ticket = Ticket(passenger_name, start, end, fare, quantity)            #notun ticket object toiri hbe
-        self.tickets.append(ticket)
+    def book_ticket(self, passenger_name, start, end, quantity):                           # book_ticket name e ekta methos hbe ja notun ticket book korar jonno use hbe
+        fare = self.get_fare(start, end)                                                   # start station theke end station porjonto fare calculate korar jonno get_fare method call kora hbe
+        ticket = Ticket(passenger_name, start, end, fare, quantity)                         #ticket class er object toiri kora hbe ja passenger name, start station, end station, fare and quantity receive korbe                     
+        self.tickets.append(ticket)                                                         # toiri kora ticket list e add kora hbe
         return ticket
 
-    def delete_ticket(self, ticket_id):
-        for t in self.tickets:
-            if t.id == ticket_id:
-                self.tickets.remove(t)
+    def delete_ticket(self, ticket_id):                                                     #delete_ticket name e ekta method hbe ja ticket id receive korbe and oi id er ticket list theke delete korbe
+        for t in self.tickets:                                                              #ticket list e loop hbe and jodi kono ticket er id match kore oi id er ticket list theke remove kora hbe and true return kora hbe
+            if t.id == ticket_id:                                                           #ticket id match korle oi ticket list theke remove kora hbe
+                self.tickets.remove(t)                                                       #tahole oi ticket list theke remove kora hbe
                 return True
         return False                                                                          #nahole false return korbe
 
     def search_tickets(self, keyword):                                                        #passenger name diye search korar jonno
         result = []                                                                           #result name er empty list toiri hbe
-        for t in self.tickets:                                                                # sob ticket loop hbe na
+        for t in self.tickets:                                                                
             if keyword.lower() in t.passenger_name.lower():                                   #ami ja likhtesi seta choto hater word hbe and passenger er name er choto hater hbe jodi boro hhatero likhi seta choto hater sathe match korbe
                 result.append(t)                                                              #match hike t list e add hbe
         return result
 
     def total_fare(self):
-        total = 0                                                                            # variable 0 first e kono tk add hoi ni
+        total = 0                                                                            #total fare calculate korar jonno total variable toiri kora hbe ja 0 diye initialize kora hbe  
         for t in self.tickets:                                                               # ek ek kore proti ta ticket t ney hocce
-            total += t.total                                                                 #total vara add hocce
+            total += t.total                                                                 #ticket er total fare add kora hbe total variable e
         return total 
    
 
