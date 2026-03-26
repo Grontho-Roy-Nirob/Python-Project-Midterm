@@ -1,6 +1,7 @@
 import tkinter as tk                            # import tkinter library
 from tkinter import ttk,messagebox,simpledialog #import tkinter submodule from tkinter library,message pop up box create korbe,puro ekat window design na kore choto choto input box hisebe vese uthe screen e
 # from PIL import Image, ImageTk                  # ami kono background pic  dekhte cai ei project e setar jonno Pillow library
+
 class Ticket:
     ticket_counter=1                            # value 1
     def __init__(self, passenger_name, start, end, fare, quantity): # proti ta jatrir er jonno ekta unique id save kora hocce
@@ -23,9 +24,9 @@ stations = [
 ]
 
 class MetroSystem:  
-    def __init__(self):                       #jokhon object ready  hbe tokhon automatically run hbe
-        self.tickets = []                     # ei empty list e ticket rakha hbe
-        
+    def __init__(self):
+        self.tickets = []
+
     def get_fare(self, start, end):
         if start == end:
             return 0  # same station
@@ -43,16 +44,17 @@ class MetroSystem:
 
         return base_fare + distance * per_station_fare
 
-    def book_ticket(self, passenger_name, passenger_type, train, start, end, fare, quantity):
-        ticket = Ticket(passenger_name, passenger_type, train, start, end, fare, quantity)    #notun ticket object toiri hbe
-        self.tickets.append(ticket)                                                           # ticket list e add hbe
-        return ticket                                                                         # oi ticket ta resturn korbe
+    def book_ticket(self, passenger_name, start, end, quantity):
+        fare = self.get_fare(start, end)
+        ticket = Ticket(passenger_name, start, end, fare, quantity)            #notun ticket object toiri hbe
+        self.tickets.append(ticket)
+        return ticket
 
-    def delete_ticket(self, ticket_id):                                                       #ticket ta deleted korar jonno
-        for t in self.tickets:                                                                # loop create hbe list er sob ticket loop wise
-            if t.id == ticket_id:                                                             # jodi id match kore tahole ticket deleted 
-                self.tickets.remove(t)                                                        # remove kore dibe
-                return True                                                                   #deleted hole true return korbe
+    def delete_ticket(self, ticket_id):
+        for t in self.tickets:
+            if t.id == ticket_id:
+                self.tickets.remove(t)
+                return True
         return False                                                                          #nahole false return korbe
 
     def search_tickets(self, keyword):                                                        #passenger name diye search korar jonno
@@ -67,3 +69,134 @@ class MetroSystem:
         for t in self.tickets:                                                               # ek ek kore proti ta ticket t ney hocce
             total += t.total                                                                 #total vara add hocce
         return total 
+   
+
+# Tkinter GUI 
+class MetroApp:
+    def __init__(self, root):
+        # pass
+        self.metro = MetroSystem() # Creating metro system object & hold this reference in self.metro attribute of MetroApp Class. Purpose for accessing the MetroSystem class methods
+        self.root = root # the root will be an attribute of the MetroApp object, representing the Tkinter main window.
+        self.root.title("Metro Rail Management System")
+        self.root.geometry("900x500")
+        
+    # Left Frame
+        # Frame Label
+        self.left_frame = tk.Frame(root, padx=10, pady=10)
+        self.left_frame.pack(side=tk.LEFT, fill=tk.Y)
+    
+        # Name Label
+        name_label = tk.Label(self.left_frame, text="Passenger Name:")
+        name_label.pack(anchor=tk.W)
+        self.name_entry = tk.Entry(self.left_frame)
+        self.name_entry.pack(anchor=tk.W, fill=tk.X)
+        
+        # Start Station Label
+        startStation_label = tk.Label(self.left_frame, text="Start Station:")
+        startStation_label.pack(anchor=tk.W)
+        self.start_combo = ttk.Combobox(self.left_frame, values=stations) 
+        self.start_combo.current(0) # First option of ComboBox is noted as index 0
+        self.start_combo.pack(anchor=tk.W, fill=tk.X)
+        
+        # End Station Label
+        endStation_label = tk.Label(self.left_frame, text="Start Station:")
+        endStation_label.pack(anchor=tk.W)
+        self.end_combo = ttk.Combobox(self.left_frame, values=stations)
+        self.end_combo.current(1) # Second option of ComboBox is noted as another station's index number
+        self.end_combo.pack(anchor=tk.W, fill=tk.X)
+        
+        # Quantity Label
+        quantity_label = tk.Label(self.left_frame, text="Quantity:")
+        quantity_label.pack(anchor=tk.W)
+        self.quantity_spin = tk.Spinbox(self.left_frame, from_=1, to=10)
+        self.quantity_spin.pack(anchor=tk.W, fill=tk.X)
+        
+        # Button Design
+        book_Ticket = tk.Button(self.left_frame, text="Book Ticket", bg="blue", fg="white", command=self.book_ticket)
+        book_Ticket.pack(fill=tk.X, pady=5)
+        delete_Ticket = tk.Button(self.left_frame, text="Delete Ticket", bg="red", fg="white", command=self.delete_ticket)
+        delete_Ticket.pack(fill=tk.X, pady=5)
+        search_Ticket = tk.Button(self.left_frame, text="Search Ticket", bg="green", fg="white", command=self.search_ticket)
+        search_Ticket.pack(fill=tk.X, pady=5)
+        show_all_Tickets = tk.Button(self.left_frame, text="Show All Tickets", bg="purple", fg="white", command=self.show_all_tickets)
+        show_all_Tickets.pack(fill=tk.X, pady=5)
+        total_Fare = tk.Button(self.left_frame, text="Total Fare", bg="orange", fg="black", command=self.show_total_fare)
+        total_Fare.pack(fill=tk.X, pady=5)
+        
+    # Right Frame
+        # Frame Label
+        self.right_frame = tk.Frame(root, padx=10, pady=10)
+        self.right_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        # Grid View 
+        columns = ("ID", "Name", "Start", "End", "Quantity", "Total")
+        self.tree = ttk.Treeview(self.right_frame, columns=columns, show="headings") # Create the table structure
+
+        for col in columns:
+            self.tree.heading(col, text=col)
+            self.tree.column(col, width=100, anchor=tk.CENTER)
+
+        # Create Scrollbar
+        scrollbar = ttk.Scrollbar(self.right_frame, orient=tk.VERTICAL, command=self.tree.yview)
+        self.tree.configure(yscroll=scrollbar.set)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        self.tree.pack(fill=tk.BOTH, expand=True)
+        
+# Button Functions
+    # Buy Ticket btn method
+    def book_ticket(self):
+        name = self.name_entry.get()
+        start = self.start_combo.get()
+        end = self.end_combo.get()
+        quantity = int(self.quantity_spin.get())
+
+        if not all([name, start, end]):
+            messagebox.showwarning("Warning", "Please fill all the fields")
+            return
+
+        ticket = self.metro.book_ticket(name, start, end, quantity)
+        messagebox.showinfo("Success", f"Ticket Booked!\nTotal Fare: {ticket.total} BDT")
+        self.show_all_tickets()
+
+    # Delete Ticket btn method
+    def delete_ticket(self):
+        selected = self.tree.selection()
+        if not selected:
+            messagebox.showwarning("Warning", "Select a ticket to delete")
+            return
+        ticket_id = int(self.tree.item(selected[0])["values"][0])
+        if self.metro.delete_ticket(ticket_id):
+            messagebox.showinfo("Deleted", "Ticket deleted successfully")
+            self.show_all_tickets()
+
+    # Search Ticket btn method
+    def search_ticket(self):
+        keyword = self.name_entry.get()
+        results = self.metro.search_tickets(keyword)
+
+        children = self.tree.get_children()  
+        for child in children:
+            self.tree.delete(child)  
+            
+        for t in results:
+            self.tree.insert("", tk.END, values=(t.id, t.passenger_name, t.start, t.end, t.quantity, t.total))
+
+    # Show All Ticket details btn method
+    def show_all_tickets(self):
+        children = self.tree.get_children()  
+        for child in children:
+            self.tree.delete(child)        
+
+        for t in self.metro.tickets:
+            self.tree.insert("", tk.END, values=(t.id, t.passenger_name, t.start, t.end, t.quantity, t.total))
+            
+    #Total Price method
+    def show_total_fare(self):
+        total = self.metro.total_fare()
+        messagebox.showinfo("Total Fare", f"Total Fare for all tickets: {total} BDT")
+        
+# Run GUI   
+root = tk.Tk()
+app = MetroApp(root)
+root.mainloop()
