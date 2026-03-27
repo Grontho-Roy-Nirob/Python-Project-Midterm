@@ -165,11 +165,37 @@ class MetroApp:
         name = self.name_entry.get()
         start = self.start_combo.get()
         end = self.end_combo.get()
-        quantity = int(self.quantity_spin.get())
+        quantity = self.quantity_spin.get()
         passenger_type = self.passenger_type_combo.get()
 
-        if not all([name, start, end]):
+         # Validation
+        # Check if name contains any numbers
+        for st in name:
+            if st.isdigit():
+                messagebox.showwarning("Warning", "Passenger name cannot contain numbers")
+                return
+    
+        # Check if any field is empty
+        if name == "" or start == "" or end == "":
             messagebox.showwarning("Warning", "Please fill all the fields")
+            return
+
+        # Check if start and end are the same
+        if start == end:
+            messagebox.showwarning("Warning", "Start and End stations cannot be the same")
+            return
+            
+        # Validation: Quantity must be numeric
+        if not quantity.isdigit():
+            messagebox.showwarning("Warning", "Quantity must be a number")
+            return
+
+        # Convert quantity to integer after passing numeric check
+        quantity = int(quantity)
+ 
+        # Check if quantity is valid
+        if quantity <= 0:
+            messagebox.showwarning("Warning", "Quantity must be at least 1")
             return
 
         ticket = self.metro.book_ticket(name, start, end, quantity, passenger_type)
