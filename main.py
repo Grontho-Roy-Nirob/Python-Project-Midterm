@@ -4,7 +4,7 @@ from tkinter import ttk,messagebox,simpledialog #import tkinter submodule from t
 
 class Ticket:
     ticket_counter=1                            # value 1
-    def __init__(self, passenger_name, start, end, fare, quantity): # proti ta jatrir er jonno ekta unique id save kora hocce
+    def __init__(self, passenger_name, start, end, fare, quantity, passenger_type="General"): # proti ta jatrir er jonno ekta unique id save kora hocce
         self.id = Ticket.ticket_counter
         Ticket.ticket_counter += 1              # prothom jatri assing korar porei counter er value 1 bariye 2 kora hbe
  
@@ -14,6 +14,7 @@ class Ticket:
         self.fare = fare
         self.quantity = quantity
         self.total = fare * quantity
+        self.passenger_type = passenger_type
  
     def __str__(self):
         return f"{self.passenger_name} | {self.start} to {self.end} | {self.quantity} Ticket | Total: {self.total} BDT"
@@ -27,7 +28,7 @@ class MetroSystem:
     def __init__(self):
         self.tickets = []
 
-    def get_fare(self, start, end):
+    def get_fare(self, start, end, passenger_type="General"):
         if start == end:
             return 0  # same station
         if start not in stations or end not in stations:
@@ -42,11 +43,19 @@ class MetroSystem:
         base_fare = 20
         per_station_fare = 10
 
-        return base_fare + distance * per_station_fare
+        fare = base_fare + distance * per_station_fare
 
-    def book_ticket(self, passenger_name, start, end, quantity):                           # book_ticket name e ekta methos hbe ja notun ticket book korar jonno use hbe
-        fare = self.get_fare(start, end)                                                   # start station theke end station porjonto fare calculate korar jonno get_fare method call kora hbe
-        ticket = Ticket(passenger_name, start, end, fare, quantity)                         #ticket class er object toiri kora hbe ja passenger name, start station, end station, fare and quantity receive korbe                     
+        # Apply discount
+        if passenger_type == "Student":
+            fare = fare * 0.50
+        elif passenger_type == "Disabled":
+            fare = fare * 0.20
+        
+        return fare 
+
+    def book_ticket(self, passenger_name, start, end, quantity, passenger_type="General"):                           # book_ticket name e ekta methos hbe ja notun ticket book korar jonno use hbe
+        fare = self.get_fare(start, end, passenger_type)                                                   # start station theke end station porjonto fare calculate korar jonno get_fare method call kora hbe
+        ticket = Ticket(passenger_name, start, end, fare, quantity, passenger_type)                         #ticket class er object toiri kora hbe ja passenger name, start station, end station, fare and quantity receive korbe                     
         self.tickets.append(ticket)                                                         # toiri kora ticket list e add kora hbe
         return ticket
 
@@ -110,6 +119,13 @@ class MetroApp:
         quantity_label.pack(anchor=tk.W)
         self.quantity_spin = tk.Spinbox(self.left_frame, from_=1, to=10)
         self.quantity_spin.pack(anchor=tk.W, fill=tk.X)
+
+        # Passenger Type Label
+        passenger_type_label = tk.Label(self.left_frame, text="Passenger Type:")
+        passenger_type_label.pack(anchor=tk.W)
+        self.passenger_type_combo = ttk.Combobox(self.left_frame, values=["General", "Student", "Disabled"], state="readonly")
+        self.passenger_type_combo.current(0)
+        self.passenger_type_combo.pack(anchor=tk.W, fill=tk.X)
         
         # Button Design
         book_Ticket = tk.Button(self.left_frame, text="Book Ticket", bg="blue", fg="white", command=self.book_ticket)
@@ -129,7 +145,7 @@ class MetroApp:
         self.right_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
         # Grid View 
-        columns = ("ID", "Name", "Start", "End", "Quantity", "Total")
+        columns = ("ID", "Name", "Start", "End", "Quantity", "Type", "Total")
         self.tree = ttk.Treeview(self.right_frame, columns=columns, show="headings") # Create the table structure
 
         for col in columns:
@@ -150,12 +166,13 @@ class MetroApp:
         start = self.start_combo.get()
         end = self.end_combo.get()
         quantity = int(self.quantity_spin.get())
+        passenger_type = self.passenger_type_combo.get()
 
         if not all([name, start, end]):
             messagebox.showwarning("Warning", "Please fill all the fields")
             return
 
-        ticket = self.metro.book_ticket(name, start, end, quantity)
+        ticket = self.metro.book_ticket(name, start, end, quantity, passenger_type)
         messagebox.showinfo("Success", f"Ticket Booked!\nTotal Fare: {ticket.total} BDT")
         self.name_entry.delete(0, tk.END) # Clear the input field 
         self.show_all_tickets()
@@ -181,7 +198,7 @@ class MetroApp:
             self.tree.delete(child)  
             
         for t in results:
-            self.tree.insert("", tk.END, values=(t.id, t.passenger_name, t.start, t.end, t.quantity, t.total))
+            self.tree.insert("", tk.END, values=(t.id, t.passenger_name, t.start, t.end, t.quantity, t.passenger_type, t.total))
         self.name_entry.delete(0, tk.END) # Clear the input field 
 
 
@@ -192,7 +209,7 @@ class MetroApp:
             self.tree.delete(child)        
 
         for t in self.metro.tickets:
-            self.tree.insert("", tk.END, values=(t.id, t.passenger_name, t.start, t.end, t.quantity, t.total))
+            self.tree.insert("", tk.END, values=(t.id, t.passenger_name, t.start, t.end, t.quantity, t.passenger_type, t.total))
             
     #Total Price method
     def show_total_fare(self):
