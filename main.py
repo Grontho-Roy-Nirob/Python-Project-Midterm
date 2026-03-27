@@ -1,6 +1,6 @@
 import tkinter as tk                            # import tkinter library
 from tkinter import ttk,messagebox,simpledialog #import tkinter submodule from tkinter library,message pop up box create korbe,puro ekat window design na kore choto choto input box hisebe vese uthe screen e
-# from PIL import Image, ImageTk                  # ami kono background pic  dekhte cai ei project e setar jonno Pillow library
+from datetime import date
 
 class Ticket:
     ticket_counter=1                            # value 1
@@ -15,6 +15,7 @@ class Ticket:
         self.quantity = quantity
         self.total = fare * quantity
         self.passenger_type = passenger_type
+        self.date = date.today()
  
     def __str__(self):
         return f"{self.passenger_name} | {self.start} to {self.end} | {self.quantity} Ticket | Total: {self.total} BDT"
@@ -87,7 +88,7 @@ class MetroApp:
         self.metro = MetroSystem() # Creating metro system object & hold this reference in self.metro attribute of MetroApp Class. Purpose for accessing the MetroSystem class methods
         self.root = root # the root will be an attribute of the MetroApp object, representing the Tkinter main window.
         self.root.title("Metro Rail Management System")
-        self.root.geometry("900x500")
+        self.root.geometry("1200x600")
         
     # Left Frame
         # Frame Label
@@ -145,7 +146,7 @@ class MetroApp:
         self.right_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
         # Grid View 
-        columns = ("ID", "Name", "Start", "End", "Quantity", "Type", "Total")
+        columns = ("ID", "Name", "Start", "End", "Quantity", "Type", "Total", "Date")
         self.tree = ttk.Treeview(self.right_frame, columns=columns, show="headings") # Create the table structure
 
         for col in columns:
@@ -231,7 +232,7 @@ class MetroApp:
             self.tree.delete(child)  
             
         for t in results:
-            self.tree.insert("", tk.END, values=(t.id, t.passenger_name, t.start, t.end, t.quantity, t.passenger_type, t.total))
+            self.tree.insert("", tk.END, values=(t.id, t.passenger_name, t.start, t.end, t.quantity, t.passenger_type, t.total, t.date))
         self.name_entry.delete(0, tk.END) # Clear the input field 
 
 
@@ -242,7 +243,7 @@ class MetroApp:
             self.tree.delete(child)        
 
         for t in self.metro.tickets:
-            self.tree.insert("", tk.END, values=(t.id, t.passenger_name, t.start, t.end, t.quantity, t.passenger_type, t.total))
+            self.tree.insert("", tk.END, values=(t.id, t.passenger_name, t.start, t.end, t.quantity, t.passenger_type, t.total,  t.date))
             
     #Total Price method
     def show_total_fare(self):
