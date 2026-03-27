@@ -99,7 +99,7 @@ class MetroApp:
         self.start_combo.pack(anchor=tk.W, fill=tk.X)
         
         # End Station Label
-        endStation_label = tk.Label(self.left_frame, text="Start Station:")
+        endStation_label = tk.Label(self.left_frame, text="End Station:")
         endStation_label.pack(anchor=tk.W)
         self.end_combo = ttk.Combobox(self.left_frame, values=stations)
         self.end_combo.current(1) # Second option of ComboBox is noted as another station's index number
