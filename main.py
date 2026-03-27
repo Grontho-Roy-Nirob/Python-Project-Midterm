@@ -168,7 +168,7 @@ class MetroApp:
         quantity = self.quantity_spin.get()
         passenger_type = self.passenger_type_combo.get()
 
-         # Validation
+        # Validation
         # Check if name contains any numbers
         for st in name:
             if st.isdigit():
@@ -200,7 +200,14 @@ class MetroApp:
 
         ticket = self.metro.book_ticket(name, start, end, quantity, passenger_type)
         messagebox.showinfo("Success", f"Ticket Booked!\nTotal Fare: {ticket.total} BDT")
+       
         self.name_entry.delete(0, tk.END) # Clear the input field 
+        self.start_combo.current(0) # Reset Start Station
+        self.end_combo.current(1) # Reset End Station
+        # Reset Quantity
+        self.quantity_spin.delete(0, tk.END)
+        self.quantity_spin.insert(0, "1")
+        
         self.show_all_tickets()
 
     # Delete Ticket btn method
@@ -241,8 +248,7 @@ class MetroApp:
     def show_total_fare(self):
         total = self.metro.total_fare()
         messagebox.showinfo("Total Fare", f"Total Fare for all tickets: {total} BDT")
-        
-        
+           
 # Run GUI   
 root = tk.Tk()
 app = MetroApp(root)
