@@ -1,0 +1,13 @@
+[
+    {
+        "id": 1,
+        "passenger_name": "Musfiq",
+        "start": "Uttara North",
+        "end": "Pallabi",
+        "fare": 25.0,
+        "quantity": 1,
+        "total": 25.0,
+        "passenger_type": "Student",
+        "date": "2026-03-28"
+    }
+]
