@@ -294,7 +294,7 @@ class MetroApp:
             
     #Total Price method
     def show_total_fare(self):
-        children = self.tree.get_children()  # get currently visible rows in grid
+        children = self.tree.get_children()  # get currently showing rows in grid
     
         total_fare = 0
         total_quantity = 0
