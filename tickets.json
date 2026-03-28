@@ -9,5 +9,27 @@
         "total": 25.0,
         "passenger_type": "Student",
         "date": "2026-03-28"
+    },
+    {
+        "id": 2,
+        "passenger_name": "Grontho",
+        "start": "Uttara North",
+        "end": "Mirpur 10",
+        "fare": 14.0,
+        "quantity": 1,
+        "total": 14.0,
+        "passenger_type": "Disabled",
+        "date": "2026-03-28"
+    },
+    {
+        "id": 3,
+        "passenger_name": "Sajid",
+        "start": "Uttara Center",
+        "end": "Uttara South",
+        "fare": 30,
+        "quantity": 1,
+        "total": 30,
+        "passenger_type": "General",
+        "date": "2026-03-28"
     }
 ]

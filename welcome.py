@@ -25,7 +25,7 @@ class WelcomePage:
 
     def open_main(self):
         self.root.destroy()       # close window
-        import tempCodeRunnerFile # open main file
+        import main # open main file
 
 
 # Run
