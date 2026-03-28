@@ -2,20 +2,7 @@ import tkinter as tk                            # import tkinter library
 from tkinter import ttk,messagebox,simpledialog #import tkinter submodule from tkinter library,message pop up box create korbe,puro ekat window design na kore choto choto input box hisebe vese uthe screen e
 from datetime import date
 import json
-class Ticket:
-    ticket_counter=1                            # value 1
-    def __init__(self, passenger_name, start, end, fare, quantity, passenger_type="General"): # proti ta jatrir er jonno ekta unique id save kora hocce
-        self.id = Ticket.ticket_counter
-        Ticket.ticket_counter += 1              # prothom jatri assing korar porei counter er value 1 bariye 2 kora hbe
- 
-        self.passenger_name = passenger_name    
-        self.start = start
-        self.end = end
-        self.fare = fare
-        self.quantity = quantity
-        self.total = fare * quantity
-        self.passenger_type = passenger_type
-        self.date = date.today()
+from tkcalendar import DateEntry
 
 class Ticket:
     ticket_counter=1                            # value 1
@@ -186,6 +173,14 @@ class MetroApp:
         show_all_Tickets.pack(fill=tk.X, pady=5)
         total_Fare = tk.Button(self.left_frame, text="Total Fare", bg="orange", fg="black", command=self.show_total_fare)
         total_Fare.pack(fill=tk.X, pady=5)
+
+        # Date Filter
+        date_filter_label = tk.Label(self.left_frame, text="Filter by Date:")
+        date_filter_label.pack(anchor=tk.W)
+        self.date_picker = DateEntry(self.left_frame, width=12, background="darkblue", foreground="white", date_pattern="yyyy-mm-dd")
+        self.date_picker.pack(anchor=tk.W, fill=tk.X)
+        filter_btn = tk.Button(self.left_frame, text="Filter by Date", bg="teal", fg="white", command=self.filter_by_date)
+        filter_btn.pack(fill=tk.X, pady=5)
         
     # Right Frame
         # Frame Label
@@ -252,7 +247,7 @@ class MetroApp:
         ticket = self.metro.book_ticket(name, start, end, quantity, passenger_type)
         self.metro.save_data() 
         messagebox.showinfo("Success", f"Ticket Booked!\nTotal Fare: {ticket.total} BDT")
-        
+
         self.name_entry.delete(0, tk.END) # Clear the input field 
         self.start_combo.current(0) # Reset Start Station
         self.end_combo.current(1) # Reset End Station
@@ -299,8 +294,36 @@ class MetroApp:
             
     #Total Price method
     def show_total_fare(self):
-        total = self.metro.total_fare()
-        messagebox.showinfo("Total Fare", f"Total Fare for all tickets: {total} BDT")
+        children = self.tree.get_children()  # get currently visible rows in grid
+    
+        total_fare = 0
+        total_quantity = 0
+    
+        for child in children:
+            values = self.tree.item(child)["values"]
+            total_quantity += int(values[4])    
+            total_fare += float(values[6])      
+
+        messagebox.showinfo("Total Summary", 
+            f"Total Tickets: {total_quantity}\nTotal Fare: {total_fare} BDT")
+    
+
+    def filter_by_date(self):
+        selected_date = self.date_picker.get_date()  
+
+        children = self.tree.get_children()
+        for child in children:
+            self.tree.delete(child)
+
+        found = False
+        for t in self.metro.tickets:
+            if t.date == selected_date:
+                self.tree.insert("", tk.END, values=(t.id, t.passenger_name, t.start, t.end, t.quantity, t.passenger_type, t.total, t.date))
+                found = True
+
+        if not found:
+            messagebox.showinfo("Info", f"No tickets found for {selected_date}")
+    
         
         
 # Run GUI   

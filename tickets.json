@@ -19,7 +19,7 @@
         "quantity": 1,
         "total": 14.0,
         "passenger_type": "Disabled",
-        "date": "2026-03-28"
+        "date": "2026-03-27"
     },
     {
         "id": 3,
@@ -29,6 +29,17 @@
         "fare": 30,
         "quantity": 1,
         "total": 30,
+        "passenger_type": "General",
+        "date": "2026-03-28"
+    },
+    {
+        "id": 4,
+        "passenger_name": "Noor",
+        "start": "Mirpur 11",
+        "end": "Uttara Center",
+        "fare": 50,
+        "quantity": 2,
+        "total": 100,
         "passenger_type": "General",
         "date": "2026-03-28"
     }

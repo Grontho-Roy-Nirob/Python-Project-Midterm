@@ -26,6 +26,7 @@ class WelcomePage:
     def open_main(self):
         self.root.destroy()       # close window
         import main # open main file
+        
 
 
 # Run
